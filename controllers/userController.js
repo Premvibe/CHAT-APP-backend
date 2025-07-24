@@ -1,3 +1,6 @@
+import { generateToken } from "../lib/utils";
+import User from "../models/User.js";
+import bcrypt from "bcrypt";
 
 
 //signup  a new user
@@ -21,5 +24,29 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    
+    const newUser = await User.create({
+      email,
+      fullName,
+      password: hashedPassword,
+      bio,
+    });
+
+    const token = generateToken(newUser._id);
+
+    res.json({
+      success: true,
+      userDate: newUser,
+      token,
+      message: "User created successfully",
+    });
+
   } catch (error) {
+    console.log (error.message);
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+} 
+
+//controller for user login
