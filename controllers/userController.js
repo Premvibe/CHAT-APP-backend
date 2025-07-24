@@ -50,3 +50,47 @@ export const signup = async (req, res) => {
 } 
 
 //controller for user login
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.json({
+        status: false,
+        message: "Please fill all the fields",
+      });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({
+        status: false,
+        message: "User does not exist",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.json({
+        status: false,
+        message: "Invalid password",
+      });
+    }
+
+    const token = generateToken(user._id);
+
+    res.json({
+      success: true,
+      userData: user,
+      token,
+      message: "Login successful",
+    });
+
+  } catch (error) {
+    console.log(error.message);
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+}   
