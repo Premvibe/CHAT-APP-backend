@@ -6,5 +6,7 @@ const userRouter = express.Router();
 
 userRouter.post("/signup",signup);
 userRouter.post("/login", login);
-userRouter.put("/upadte-profile", protectRoute,updateProfile)
-userRouter.get("/check", protectRoute,updateProfile)
+userRouter.put("/upadte-profile", protectRoute,updateProfile);
+userRouter.get("/check", protectRoute,updateProfile);
+
+export default userRouter;
